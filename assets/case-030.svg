@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<rect width="1200" height="800" fill="white"/>
+<g font-family="Arial">
+<text x="50" y="55" font-size="32" font-weight="700" fill="#111">Vaka 030 • Boyut / Tolerans</text>
+<text x="50" y="90" font-size="20" fill="#555">CMM eğitim teknik resmi • ölçü ve tolerans</text>
+<rect x="250" y="250" width="700" height="220" fill="#f7f7f7" stroke="#111" stroke-width="5"/>
+<line x1="250" y1="560" x2="950" y2="560" stroke="#1261a8" stroke-width="4"/>
+<line x1="250" y1="530" x2="250" y2="590" stroke="#1261a8" stroke-width="3"/>
+<line x1="950" y1="530" x2="950" y2="590" stroke="#1261a8" stroke-width="3"/>
+<text x="455" y="610" font-size="25" fill="#1261a8">60.00 ± 0.03 mm</text>
+<circle cx="600" cy="360" r="42" fill="white" stroke="#1261a8" stroke-width="4"/>
+<text x="560" y="368" font-size="20" fill="#111">CMM</text>
+<text x="425" y="685" font-size="22" fill="#333">Ölçülen = 59.96 mm</text>
+<text x="390" y="725" font-size="20" fill="#333">Limit = 59.97 … 60.03 mm</text>
+</g></svg>

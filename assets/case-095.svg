@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<rect width="1200" height="800" fill="white"/><g font-family="Arial">
+<text x="50" y="55" font-size="32" font-weight="700">Vaka 095 • CMM Raporu</text>
+<rect x="210" y="130" width="780" height="500" fill="#fafafa" stroke="#111" stroke-width="4"/>
+<text x="250" y="195" font-size="30" font-weight="700">CMM INSPECTION REPORT</text>
+<line x1="250" y1="220" x2="950" y2="220" stroke="#777" stroke-width="2"/>
+<text x="260" y="285" font-size="23">Nominal</text><text x="700" y="285" font-size="23">50.000 mm</text>
+<text x="260" y="345" font-size="23">Tolerance</text><text x="700" y="345" font-size="23">± 0.300 mm</text>
+<text x="260" y="405" font-size="23">Measured</text><text x="700" y="405" font-size="23">49.940 mm</text>
+<text x="260" y="465" font-size="23">Deviation</text><text x="700" y="465" font-size="23">?</text>
+<text x="260" y="545" font-size="28" font-weight="700">RESULT: ?</text>
+<text x="260" y="590" font-size="20">Limitler: 49.700 – 50.300 mm</text>
+</g></svg>

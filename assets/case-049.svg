@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<rect width="1200" height="800" fill="white"/>
+<g font-family="Arial">
+<text x="50" y="55" font-size="32" font-weight="700" fill="#111">Vaka 049 • GD&T</text>
+<text x="50" y="90" font-size="20" fill="#555">CMM / GD&amp;T teknik resim alıştırması</text>
+<rect x="220" y="280" width="760" height="210" fill="#f7f7f7" stroke="#111" stroke-width="5"/>
+<line x1="260" y1="560" x2="940" y2="560" stroke="#555" stroke-width="3"/>
+<rect x="390" y="135" width="420" height="90" fill="white" stroke="#111" stroke-width="4"/>
+<line x1="530" y1="135" x2="530" y2="225" stroke="#111" stroke-width="3"/>
+<line x1="670" y1="135" x2="670" y2="225" stroke="#111" stroke-width="3"/>
+<text x="430" y="195" font-size="28">Diklik</text><text x="555" y="195" font-size="25">0.08</text><text x="715" y="195" font-size="25">A</text>
+<polygon points="450,490 500,560 400,560" fill="white" stroke="#111" stroke-width="4"/>
+<text x="438" y="610" font-size="26">A</text>
+<text x="290" y="690" font-size="22" fill="#333">Diklik • 0.08 mm • datum A</text>
+</g></svg>

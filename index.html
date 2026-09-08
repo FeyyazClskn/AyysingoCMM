@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050505">
+<title>Ayysingo'ya Özel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+<div class="site-title">Hay Apoya Basayım Ne Güzel Site</div>
+<div class="brand">Ayysingo'ya Özel</div>
+<div class="sub">CMM • Teknik Resim • GD&amp;T • Ölçüm Eğitimi</div>
+<nav><button class="nav active" data-m="practice">Çalış</button><button class="nav" data-m="quiz">Sınav</button><button class="nav" data-m="progress">İlerleme</button></nav>
+</div></header>
+<main class="wrap">
+<section id="practice" class="screen"><div class="grid">
+<article class="card">
+<div class="top"><span class="pill" id="topic"></span><span class="pill dark" id="target"></span><b id="caseNo"></b></div>
+<div id="practiceCanvas" class="canvas"></div>
+<h2 id="q"></h2>
+<div id="currentCase"><p id="clickHint" class="muted">Görseldeki hedef bölgeyi seç. Cevap kontrol edilene kadar doğru cevap gösterilmez.</p><div id="answerArea"></div><div id="selectedType" class="selected">Henüz hedef seçilmedi</div></div>
+<div id="fb" class="feedback" hidden></div>
+</article>
+<aside class="card"><h3>Nasıl çalışır?</h3><p class="muted">Önce görseli incele, hedef noktaya tıkla, sonra teknik veya sayısal cevabı ver.</p>
+<h3>İlerleme</h3><div class="stats"><div><b id="score">0%</b><small>başarı</small></div><div><b id="done">0</b><small>çözülen</small></div><div><b id="streak">0</b><small>seri</small></div></div>
+<div class="bar"><i id="bar"></i></div><button class="nextBtn" onclick="next()">Sonraki vaka →</button>
+<div class="note">Eğitim amaçlıdır.</div></aside>
+</div></section>
+<section id="quiz" class="screen" hidden><article class="card"><h1>10 Soruluk İnteraktif Sınav</h1><div id="quizBox"></div></article></section>
+<section id="progress" class="screen" hidden><article class="card"><h1>İlerleme</h1><div class="stats"><div><b id="pScore">0%</b><small>başarı</small></div><div><b id="pDone">0</b><small>çözülen</small></div><div><b id="pBest">0</b><small>en iyi seri</small></div></div></article></section>
+<footer>Ayysingo'ya Özel • CMM / Teknik Resim Eğitim Platformu</footer>
+</main>
+<script src="app.js"></script>
+</body></html>
