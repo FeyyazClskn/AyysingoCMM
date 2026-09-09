@@ -1,35 +1,998 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#050505">
-<title>Ayysingo'ya Özel</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMM Programlama Atölyesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0B2338;
+    --bg-panel:#0F2E4A;
+    --bg-panel-2:#123657;
+    --bg-input:#0A1E30;
+    --line:rgba(255,255,255,0.14);
+    --line-strong:rgba(255,255,255,0.28);
+    --ink:#EAF3FB;
+    --ink-dim:#9FC1DE;
+    --ink-faint:#6D93B4;
+    --amber:#F2A93B;
+    --amber-dim:#B8862F;
+    --pass:#6FCF97;
+    --fail:#F0705F;
+    --probe:#FFD166;
+    --font-head: 'Space Grotesk', sans-serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background-color:var(--bg-deep);
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 28px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 28px);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber); color:#1a1200;}
+  a{color:var(--probe);}
+  .wrap{max-width:1180px; margin:0 auto; padding:28px 22px 80px;}
+
+  /* header */
+  header.top{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+    padding-bottom:22px; margin-bottom:26px; border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:14px;}
+  .brand-mark{
+    width:44px; height:44px; flex:none;
+  }
+  h1{
+    font-family:var(--font-head); font-size:26px; font-weight:700; margin:0;
+    letter-spacing:0.2px; color:var(--ink);
+  }
+  .tagline{color:var(--ink-dim); font-size:14.5px; margin-top:4px; max-width:46ch;}
+  .coord-readout{
+    font-family:var(--font-mono); font-size:12.5px; color:var(--ink-faint);
+    text-align:right; line-height:1.7;
+  }
+  .coord-readout b{color:var(--amber); font-weight:600;}
+
+  /* hero: part print */
+  .hero{
+    display:grid; grid-template-columns: 1.35fr 1fr; gap:20px;
+    margin-bottom:30px;
+  }
+  @media (max-width: 880px){ .hero{grid-template-columns:1fr;} }
+
+  .panel{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:3px;
+  }
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px; border-bottom:1px solid var(--line);
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.4px;
+    color:var(--ink-dim);
+  }
+  .panel-head .dot{width:7px;height:7px;border-radius:50%; background:var(--amber); display:inline-block; margin-right:8px;}
+  .panel-body{padding:16px;}
+
+  svg.print{width:100%; height:auto; display:block;}
+  .drawing-note{
+    font-size:13px; color:var(--ink-dim); padding:10px 16px 16px;
+    border-top:1px solid var(--line);
+  }
+
+  table.spec{width:100%; border-collapse:collapse; font-family:var(--font-mono); font-size:12.5px;}
+  table.spec th{
+    text-align:left; color:var(--ink-faint); font-weight:500; padding:6px 8px;
+    border-bottom:1px solid var(--line-strong); font-size:11px; letter-spacing:0.3px;
+  }
+  table.spec td{padding:7px 8px; border-bottom:1px solid var(--line); color:var(--ink);}
+  table.spec tr:last-child td{border-bottom:none;}
+  .tol{color:var(--ink-dim);}
+
+  /* intro copy */
+  .intro-copy{font-size:15px; color:var(--ink-dim); max-width:70ch; margin:0 0 30px;}
+  .intro-copy strong{color:var(--ink); font-weight:600;}
+
+  /* lesson tabs */
+  .lesson-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
+  .lesson-tab{
+    font-family:var(--font-mono); font-size:12.5px; padding:8px 13px;
+    background:var(--bg-panel); border:1px solid var(--line); color:var(--ink-dim);
+    cursor:pointer; border-radius:3px; transition:border-color .15s, color .15s;
+  }
+  .lesson-tab:hover{border-color:var(--line-strong); color:var(--ink);}
+  .lesson-tab.active{border-color:var(--amber); color:var(--amber); background:rgba(242,169,59,0.08);}
+
+  .lesson-brief{
+    background:var(--bg-panel-2); border:1px solid var(--line); border-left:3px solid var(--amber);
+    padding:14px 16px; font-size:14px; color:var(--ink-dim); margin-bottom:20px; border-radius:0 3px 3px 0;
+  }
+  .lesson-brief b{color:var(--ink);}
+  .ex-checklist{list-style:none; margin:10px 0 0; padding:0; font-family:var(--font-mono); font-size:12.5px;}
+  .ex-checklist li{padding:3px 0; color:var(--ink-faint);}
+  .ex-checklist li.ok{color:var(--pass);}
+
+  #exercisePanel{margin-bottom:20px;}
+  .exercise-panel{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:3px;
+    padding:14px 16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .exercise-panel .ex-title{font-family:var(--font-head); font-weight:600; color:var(--ink); font-size:14px;}
+  .exercise-panel .ex-diff{font-family:var(--font-mono); font-size:11px; padding:2px 9px; border-radius:10px; border:1px solid var(--line-strong); color:var(--ink-dim);}
+  .exercise-panel .ex-diff.kolay{color:var(--pass); border-color:var(--pass);}
+  .exercise-panel .ex-diff.orta{color:var(--probe); border-color:var(--probe);}
+  .exercise-panel .ex-diff.zor{color:var(--fail); border-color:var(--fail);}
+  .exercise-panel .ex-desc{color:var(--ink-dim); font-size:13px; flex:1 1 260px;}
+  .exercise-nav{display:flex; align-items:center; gap:6px; margin-left:auto; flex-wrap:wrap;}
+  .exercise-nav input{
+    width:52px; background:var(--bg-input); border:1px solid var(--line-strong); color:var(--ink);
+    font-family:var(--font-mono); padding:6px 6px; border-radius:3px; text-align:center;
+  }
+  .exercise-nav button{
+    background:var(--bg-panel-2); border:1px solid var(--line-strong); color:var(--ink-dim);
+    font-family:var(--font-mono); font-size:12px; padding:6px 10px; border-radius:3px; cursor:pointer;
+  }
+  .exercise-nav button:hover{border-color:var(--amber); color:var(--amber);}
+  .exercise-nav button:disabled{opacity:0.4; cursor:default;}
+  .exercise-nav button:disabled:hover{border-color:var(--line-strong); color:var(--ink-dim);}
+  .ex-nav{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:3px;
+    padding:10px 14px; margin-bottom:10px;
+  }
+  .ex-title{font-family:var(--font-mono); font-size:13px; color:var(--ink); margin-right:auto; display:flex; align-items:center; gap:8px;}
+  .ex-progress{font-family:var(--font-mono); font-size:12px; color:var(--ink-dim);}
+  .ex-progress b{color:var(--amber);}
+  .diff-badge{padding:2px 8px; border-radius:2px; font-size:11px; font-weight:600; letter-spacing:0.3px;}
+  .diff-Kolay{background:rgba(111,207,151,0.15); color:var(--pass);}
+  .diff-Orta{background:rgba(242,169,59,0.15); color:var(--amber);}
+  .diff-Zor{background:rgba(240,112,95,0.15); color:var(--fail);}
+
+  .ex-grid-wrap{border:1px solid var(--line); border-radius:3px; background:var(--bg-panel);}
+  .ex-grid-wrap summary{
+    cursor:pointer; padding:10px 14px; font-family:var(--font-mono); font-size:12px;
+    color:var(--ink-dim); list-style:none;
+  }
+  .ex-grid-wrap summary::-webkit-details-marker{display:none;}
+  .ex-grid-wrap summary::before{content:'▸ '; color:var(--amber);}
+  .ex-grid-wrap[open] summary::before{content:'▾ ';}
+  .ex-grid{
+    display:grid; grid-template-columns:repeat(10, 1fr); gap:5px;
+    padding:4px 14px 16px;
+  }
+  .ex-cell{
+    font-family:var(--font-mono); font-size:11px; padding:6px 0; text-align:center;
+    border:1px solid var(--line); border-radius:2px; background:var(--bg-input); color:var(--ink-faint);
+    cursor:pointer;
+  }
+  .ex-cell:hover{border-color:var(--ink-dim); color:var(--ink);}
+  .ex-cell.done{background:rgba(111,207,151,0.12); border-color:rgba(111,207,151,0.5); color:var(--pass);}
+  .ex-cell.active{border-color:var(--amber); color:var(--amber); box-shadow:0 0 0 1px var(--amber) inset;}
+
+  /* workspace */
+  .workspace{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start;}
+  @media (max-width: 880px){ .workspace{grid-template-columns:1fr;} }
+
+  textarea#code{
+    width:100%; min-height:230px; resize:vertical;
+    background:var(--bg-input); color:var(--probe); border:none; outline:none;
+    font-family:var(--font-mono); font-size:13.5px; line-height:1.6; padding:14px 16px;
+    tab-size:2;
+  }
+  textarea#code:focus{outline:2px solid var(--amber); outline-offset:-2px;}
+
+  .toolbar{display:flex; gap:10px; padding:12px 16px; border-top:1px solid var(--line); flex-wrap:wrap;}
+  button{
+    font-family:var(--font-mono); font-size:12.5px; letter-spacing:0.2px;
+    padding:9px 16px; border-radius:3px; cursor:pointer; border:1px solid var(--line-strong);
+    background:transparent; color:var(--ink);
+  }
+  button:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+  button.primary{background:var(--amber); border-color:var(--amber); color:#241a00; font-weight:600;}
+  button.primary:hover{background:#ffbe57;}
+  button:not(.primary):hover{border-color:var(--ink-dim); color:var(--ink);}
+
+  #log{
+    font-family:var(--font-mono); font-size:12.5px; color:var(--ink-dim);
+    background:var(--bg-input); padding:12px 16px; min-height:80px; max-height:180px;
+    overflow-y:auto; border-top:1px solid var(--line); white-space:pre-wrap;
+  }
+  #log .ok{color:var(--pass);}
+  #log .err{color:var(--fail);}
+  #log .info{color:var(--ink-faint);}
+
+  svg.sim{width:100%; height:auto; display:block; background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.03), transparent 60%);}
+  .probe-dot{fill:var(--probe); opacity:0; }
+  .probe-dot.show{ animation: fadein .25s forwards; }
+  @keyframes fadein{ to{opacity:1;} }
+  .measured-mark{opacity:0;}
+  .measured-mark.show{ animation: fadein .4s forwards; }
+
+  /* report */
+  #report-wrap{margin-top:26px;}
+  table.report{width:100%; border-collapse:collapse; font-family:var(--font-mono); font-size:13px;}
+  table.report th{
+    text-align:left; padding:9px 12px; background:var(--bg-panel-2); color:var(--ink-dim);
+    font-weight:500; font-size:11.5px; letter-spacing:0.3px; border-bottom:1px solid var(--line-strong);
+  }
+  table.report td{padding:9px 12px; border-bottom:1px solid var(--line);}
+  .badge{padding:2px 8px; border-radius:2px; font-size:11.5px; font-weight:600; letter-spacing:0.3px;}
+  .badge.pass{background:rgba(111,207,151,0.15); color:var(--pass);}
+  .badge.fail{background:rgba(240,112,95,0.15); color:var(--fail);}
+
+  .banner{
+    margin-top:16px; padding:14px 16px; border-radius:3px; font-size:14px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  }
+  .banner.success{background:rgba(111,207,151,0.1); border:1px solid rgba(111,207,151,0.4); color:var(--pass);}
+  .banner.pending{background:rgba(255,255,255,0.04); border:1px solid var(--line); color:var(--ink-dim);}
+  .banner.warn{background:rgba(242,169,59,0.1); border:1px solid rgba(242,169,59,0.4); color:var(--amber);}
+  .banner button{border-color:var(--pass); color:var(--pass);}
+
+  #batch-wrap{margin-top:22px;}
+  .batch-panel .panel-head span:last-child{color:var(--ink-faint);}
+  table.report .verdict-good{color:var(--pass); font-weight:600;}
+  table.report .verdict-mid{color:var(--amber); font-weight:600;}
+  table.report .verdict-bad{color:var(--fail); font-weight:600;}
+  .batch-summary{padding:12px 16px; font-size:13px; color:var(--ink-dim); border-bottom:1px solid var(--line);}
+  .batch-summary b{color:var(--ink);}
+
+  /* reference */
+  details.ref{margin-top:34px; border:1px solid var(--line); border-radius:3px; background:var(--bg-panel);}
+  details.ref summary{
+    cursor:pointer; padding:13px 16px; font-family:var(--font-mono); font-size:12.5px;
+    color:var(--ink-dim); letter-spacing:0.3px; list-style:none;
+  }
+  details.ref summary::-webkit-details-marker{display:none;}
+  details.ref summary::before{content:'▸ '; color:var(--amber);}
+  details.ref[open] summary::before{content:'▾ '; }
+  .ref-body{padding:0 16px 18px; display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:700px){.ref-body{grid-template-columns:1fr;}}
+  .ref-body h4{font-family:var(--font-head); font-size:13.5px; margin:0 0 8px; color:var(--ink);}
+  .ref-body code{
+    display:block; font-family:var(--font-mono); font-size:12.5px; background:var(--bg-input);
+    padding:8px 10px; border-radius:3px; margin-bottom:8px; color:var(--probe);
+  }
+  .ref-body p{font-size:13px; color:var(--ink-dim); margin:4px 0 12px;}
+
+  footer.foot{
+    margin-top:50px; padding-top:18px; border-top:1px solid var(--line);
+    font-size:12.5px; color:var(--ink-faint); font-family:var(--font-mono);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .probe-dot.show, .measured-mark.show{ animation:none; opacity:1; }
+  }
+
+  /* giriş kapısı */
+  #gateOverlay{
+    position:fixed; inset:0; z-index:999;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(242,169,59,0.10), transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(111,207,151,0.10), transparent 45%),
+      var(--bg-deep);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  #gateOverlay .gate-card{
+    max-width:430px; width:100%;
+    background:var(--bg-panel);
+    border:1px solid var(--line-strong); border-radius:22px;
+    padding:32px 28px 26px;
+    text-align:center;
+    box-shadow:0 24px 70px rgba(0,0,0,0.45);
+    animation:gatePop 0.45s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes gatePop{
+    0%{ transform:scale(0.85) translateY(10px); opacity:0; }
+    100%{ transform:scale(1) translateY(0); opacity:1; }
+  }
+  #gateOverlay .gate-icon{font-size:40px; margin-bottom:8px; display:inline-block; animation:gateWave 2.2s ease-in-out infinite;}
+  @keyframes gateWave{
+    0%,100%{ transform:rotate(0deg); }
+    10%{ transform:rotate(14deg); }
+    20%{ transform:rotate(-8deg); }
+    30%{ transform:rotate(14deg); }
+    40%{ transform:rotate(-4deg); }
+    50%,100%{ transform:rotate(0deg); }
+  }
+  #gateOverlay h2{
+    font-family:var(--font-head); color:var(--ink); font-size:19px; margin:0 0 8px; line-height:1.45;
+    transition:opacity 0.15s ease;
+  }
+  #gateOverlay p{color:var(--ink-dim); font-size:13.5px; margin:0 0 22px; line-height:1.5;}
+  #gateOverlay .gate-arena{
+    position:relative; min-height:64px;
+    display:flex; align-items:center; justify-content:center; gap:14px;
+  }
+  #gateOverlay button{
+    font-family:var(--font-mono); font-size:13.5px; padding:11px 24px; border-radius:999px; cursor:pointer;
+    border:1.5px solid var(--line-strong); background:var(--bg-panel-2); color:var(--ink-dim);
+    transition:transform 0.18s cubic-bezier(.34,1.56,.64,1), background 0.15s, box-shadow 0.15s;
+  }
+  #gateOverlay button.yes{
+    position:relative; border-color:var(--pass); color:var(--pass);
+  }
+  #gateOverlay button.yes:hover{background:rgba(111,207,151,0.15); transform:scale(1.05);}
+  #gateOverlay button.no{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    border-color:var(--fail); color:var(--fail);
+  }
+  #gateOverlay button.no.dodging{
+    transition:left 0.28s cubic-bezier(.34,1.56,.64,1), top 0.28s cubic-bezier(.34,1.56,.64,1), transform 0.28s;
+  }
+  #gateOverlay button.no:active{background:rgba(240,112,95,0.15);}
+  #gateOverlay .gate-caught{
+    font-size:30px; margin-bottom:4px; animation:gatePop 0.4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .wrap{display:none;}
+</style>
 </head>
 <body>
-<header><div class="wrap">
-<div class="site-title">Hay Apoya Basayım Ne Güzel Site</div>
-<div class="brand">Ayysingo'ya Özel</div>
-<div class="sub">CMM • Teknik Resim • GD&amp;T • Ölçüm Eğitimi</div>
-<nav><button class="nav active" data-m="practice">Çalış</button><button class="nav" data-m="quiz">Sınav</button><button class="nav" data-m="progress">İlerleme</button></nav>
-</div></header>
-<main class="wrap">
-<section id="practice" class="screen"><div class="grid">
-<article class="card">
-<div class="top"><span class="pill" id="topic"></span><span class="pill dark" id="target"></span><b id="caseNo"></b></div>
-<div id="practiceCanvas" class="canvas"></div>
-<h2 id="q"></h2>
-<div id="currentCase"><p id="clickHint" class="muted">Görseldeki hedef bölgeyi seç. Cevap kontrol edilene kadar doğru cevap gösterilmez.</p><div id="answerArea"></div><div id="selectedType" class="selected">Henüz hedef seçilmedi</div></div>
-<div id="fb" class="feedback" hidden></div>
-</article>
-<aside class="card"><h3>Nasıl çalışır?</h3><p class="muted">Önce görseli incele, hedef noktaya tıkla, sonra teknik veya sayısal cevabı ver.</p>
-<h3>İlerleme</h3><div class="stats"><div><b id="score">0%</b><small>başarı</small></div><div><b id="done">0</b><small>çözülen</small></div><div><b id="streak">0</b><small>seri</small></div></div>
-<div class="bar"><i id="bar"></i></div><button class="nextBtn" onclick="next()">Sonraki vaka →</button>
-<div class="note">Eğitim amaçlıdır.</div></aside>
-</div></section>
-<section id="quiz" class="screen" hidden><article class="card"><h1>10 Soruluk İnteraktif Sınav</h1><div id="quizBox"></div></article></section>
-<section id="progress" class="screen" hidden><article class="card"><h1>İlerleme</h1><div class="stats"><div><b id="pScore">0%</b><small>başarı</small></div><div><b id="pDone">0</b><small>çözülen</small></div><div><b id="pBest">0</b><small>en iyi seri</small></div></div></article></section>
-<footer>Ayysingo'ya Özel • CMM / Teknik Resim Eğitim Platformu</footer>
-</main>
-<script src="app.js"></script>
-</body></html>
+
+<div id="gateOverlay">
+  <div class="gate-card">
+    <div class="gate-icon" id="gateIcon">🥹</div>
+    <h2 id="gateText">Selaaam, tekrar engel yememek üzere tüm engellerimi kaldırır mısın?</h2>
+    <p id="gateSub">(atölyeye girmeden önce ufak bir cevap ver, söz kısa sürer)</p>
+    <div class="gate-arena" id="gateArena">
+      <button class="yes" id="gateYesBtn">Evet 💛</button>
+      <button class="no" id="gateNoBtn">Yok</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var asked = false;
+  var icon = document.getElementById('gateIcon');
+  var gateText = document.getElementById('gateText');
+  var gateSub = document.getElementById('gateSub');
+  var arena = document.getElementById('gateArena');
+  var yesBtn = document.getElementById('gateYesBtn');
+  var noBtn = document.getElementById('gateNoBtn');
+
+  function openSite(){
+    var overlay = document.getElementById('gateOverlay');
+    overlay.style.transition = 'opacity 0.35s ease';
+    overlay.style.opacity = '0';
+    setTimeout(function(){
+      overlay.remove();
+      var wrap = document.querySelector('.wrap');
+      wrap.style.display = 'block';
+    }, 350);
+  }
+
+  function dodge(){
+    var arenaRect = arena.getBoundingClientRect();
+    var btnRect = noBtn.getBoundingClientRect();
+    var maxX = Math.max(arenaRect.width - btnRect.width, 0);
+    var maxY = Math.max(arenaRect.height - btnRect.height, 0);
+    var x = Math.random() * maxX;
+    var y = Math.random() * maxY;
+    noBtn.classList.add('dodging');
+    noBtn.style.left = (x + btnRect.width/2) + 'px';
+    noBtn.style.top = (y + btnRect.height/2) + 'px';
+    noBtn.style.transform = 'translate(-50%,-50%) rotate(' + (Math.random()*30-15) + 'deg)';
+  }
+
+  yesBtn.onclick = openSite;
+
+  function initNoPosition(){
+    var yesRect = yesBtn.getBoundingClientRect();
+    var arenaRect = arena.getBoundingClientRect();
+    var btnRect = noBtn.getBoundingClientRect();
+    var x = (yesRect.right - arenaRect.left) + 14 + btnRect.width/2;
+    var y = arenaRect.height/2;
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+  }
+  initNoPosition();
+
+  noBtn.addEventListener('mouseenter', dodge);
+  noBtn.addEventListener('pointerdown', function(e){
+    // fare tam üstündeyken tıklamaya çalışırsa yine kaçsın
+    dodge();
+  });
+
+  noBtn.addEventListener('click', function(){
+    gateText.textContent = 'Tüh ya, beceremedik 🙈';
+    gateSub.textContent = 'Buyrun, siteye geçebilirsiniz.';
+    icon.textContent = '🎉';
+    arena.innerHTML = '';
+    setTimeout(openSite, 1100);
+  });
+
+  noBtn.addEventListener('touchstart', function(e){
+    e.preventDefault();
+    dodge();
+  }, {passive:false});
+})();
+</script>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 44 44" fill="none">
+        <rect x="1" y="1" width="42" height="42" stroke="var(--ink-dim)" stroke-width="1"/>
+        <line x1="22" y1="6" x2="22" y2="38" stroke="var(--line-strong)" stroke-width="1"/>
+        <line x1="6" y1="22" x2="38" y2="22" stroke="var(--line-strong)" stroke-width="1"/>
+        <circle cx="22" cy="22" r="9" stroke="var(--amber)" stroke-width="1.4"/>
+        <circle cx="22" cy="22" r="1.6" fill="var(--amber)"/>
+      </svg>
+      <div>
+        <h1>CMM Programlama Atölyesi</h1>
+        <div class="tagline">Bir ölçüm parçası, bir komut dili, gerçekçi ölçüm gürültüsü. Program yaz, çalıştır, raporu oku.</div>
+      </div>
+    </div>
+    <div class="coord-readout">
+      REF. DATUM &nbsp;<b>A — ÜST YÜZEY</b><br>
+      BİRİM &nbsp;<b>mm</b> &nbsp;&nbsp;PROBE &nbsp;<b>Ø2.0 STYLUS</b>
+    </div>
+  </header>
+
+  <p class="intro-copy">
+    Gerçek bir CMM operatörü işe başlamadan önce parça çizimini okur, hangi özelliklerin hangi toleransla
+    kontrol edileceğini çıkarır, sonra bunu bir ölçüm programına döker. Aşağıdaki parça üzerinde aynısını yapacaksın:
+    soldaki çizimi oku, sağdaki komut dilinde bir program yaz, <strong>ÇALIŞTIR</strong>'a
+    bas ve simüle edilmiş probe dokunma noktalarından üretilen ölçüm raporunu incele.
+  </p>
+
+  <div class="hero">
+    <div class="panel">
+      <div class="panel-head"><span><span class="dot"></span><span id="printTitle">PARÇA ÇİZİMİ — PLAKA-01</span></span><span>ÖLÇEK 2:1</span></div>
+      <div class="panel-body" id="printContainer"></div>
+      <div class="drawing-note" id="drawingNote">Malzeme: Al 6061 · Kalınlık: 12 mm · Genel tolerans belirtilmemiş boyutlar için ±0.10</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span><span class="dot"></span>ÖLÇÜM PLANI</span></div>
+      <div class="panel-body" id="specContainer"></div>
+      <div class="drawing-note">Bu tablo, gerçek işlerde parça çiziminden çıkardığın "ölçüm planı"nın karşılığıdır — programını yazmadan önce her zaman buna bak.</div>
+    </div>
+  </div>
+
+  <div class="lesson-tabs" id="lessonTabs"></div>
+  <div class="lesson-brief" id="lessonBrief"></div>
+  <div id="exercisePanel" style="display:none;"></div>
+
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-head"><span><span class="dot"></span>PROGRAM EDİTÖRÜ</span><span>DSL v1</span></div>
+      <textarea id="code" spellcheck="false"></textarea>
+      <div class="toolbar">
+        <button class="primary" id="runBtn">▶ ÇALIŞTIR</button>
+        <button id="resetLessonBtn">↺ Örneği Yükle</button>
+        <button id="clearBtn">✕ Temizle</button>
+      </div>
+      <div id="log"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><span><span class="dot"></span>SİMÜLASYON — CANLI PROBE</span><span id="simState">bekliyor</span></div>
+      <div class="panel-body" id="simContainer"></div>
+    </div>
+  </div>
+
+  <div id="report-wrap"></div>
+
+  <details class="ref">
+    <summary>KOMUT REFERANSI</summary>
+    <div class="ref-body">
+      <div>
+        <h4>Düzlem / çember ölçümü</h4>
+        <code>MEAS PLANE UST N=5</code>
+        <p>UST düzlemini 5 dokunma noktasıyla ölçer, düzlemlik hatasını hesaplar.</p>
+        <code>MEAS CIRCLE DELIK1 N=6</code>
+        <p>DELIK1 çemberini 6 noktayla ölçer; çap ve merkez konumunu bulur. Nokta sayısı arttıkça ölçüm gürültüsü azalır — gerçek bir CMM'de de böyledir.</p>
+      </div>
+      <div>
+        <h4>Türetilmiş boyut ve rapor</h4>
+        <code>DIST DELIK1 DELIK2</code>
+        <p>Daha önce ölçülmüş iki özelliğin merkezleri arasındaki mesafeyi hesaplar. İkisi de önceden ölçülmüş olmalı.</p>
+        <code>REPORT</code>
+        <p>O ana kadar ölçülen her şeyi nominal/tolerans ile karşılaştıran bir tablo üretir. Bir programın sonunda mutlaka çağrılmalı.</p>
+        <code># bu bir yorum satırıdır</code>
+      </div>
+    </div>
+  </details>
+
+  <footer class="foot">Simüle edilmiş probe gürültüsü her çalıştırmada yeniden üretilir · 4 rehberli ders + 100 farklı otomatik üretilmiş alıştırma parçası içerir.</footer>
+</div>
+
+<script>
+(function(){
+  // ---- Sabit ölçek ----
+  const SCALE = 16/5; // svg px per mm
+
+  // ---- Ders parçası (PLAKA-01) — sabit ----
+  function makeLessonPart(){
+    return {
+      kind:'lesson', name:'PLAKA-01',
+      plateW:280, plateH:120,
+      planeTol:0.03, planeNoiseBase:0.028, planeMinPoints:3,
+      holes:[
+        {id:'DELIK1', cx:140, cy:100, r:16, nominalDia:10.00, tolDia:0.02, minPoints:3, noiseBase:0.05},
+        {id:'DELIK2', cx:260, cy:100, r:16, nominalDia:10.00, tolDia:0.02, minPoints:3, noiseBase:0.05}
+      ],
+      distances:[{id:'MERKEZ_MESAFE', from:'DELIK1', to:'DELIK2', nominal:60.00, tol:0.05}]
+    };
+  }
+  const LESSON_PART = makeLessonPart();
+
+  // ---- 100 farklı alıştırma parçası üretici (seed'e göre sabit/tekrarlanabilir) ----
+  function mulberry32(seed){
+    return function(){
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed>>>15, 1 | seed);
+      t = t + Math.imul(t ^ t>>>7, 61 | t) ^ t;
+      return ((t ^ t>>>14) >>> 0) / 4294967296;
+    };
+  }
+  function generateExercise(n){
+    const rng = mulberry32(n*2654435761 % 2147483647);
+    const holeCountRoll = [1,2,2,2,3][Math.floor(rng()*5)];
+    const holeCount = holeCountRoll;
+    const spacing = 120;
+    const marginX = 70;
+    const holes = [];
+    for(let i=0;i<holeCount;i++){
+      const dia = +(6 + rng()*14).toFixed(2);
+      const tolOptions=[0.010,0.015,0.020,0.025,0.030];
+      const tolDia = tolOptions[Math.floor(rng()*tolOptions.length)];
+      holes.push({
+        id:'DELIK'+(i+1),
+        cx: 60+marginX + i*spacing,
+        cy:100,
+        r: dia/2*SCALE,
+        nominalDia:dia, tolDia, minPoints:3, noiseBase:0.05
+      });
+    }
+    const distances=[];
+    for(let i=0;i<holeCount-1;i++){
+      const distTolOptions=[0.03,0.04,0.05,0.06];
+      const tol = distTolOptions[Math.floor(rng()*distTolOptions.length)];
+      const nominal = +((holes[i+1].cx - holes[i].cx)/SCALE).toFixed(2);
+      distances.push({id:'MESAFE_'+holes[i].id+'_'+holes[i+1].id, from:holes[i].id, to:holes[i+1].id, nominal, tol});
+    }
+    const planeTolOptions=[0.020,0.025,0.030,0.035];
+    const planeTol = planeTolOptions[Math.floor(rng()*planeTolOptions.length)];
+    const plateW = Math.max(200, 140 + (holeCount-1)*spacing);
+    let difficulty='Kolay';
+    if(holeCount===2) difficulty='Orta';
+    if(holeCount===3 || holes.some(h=>h.tolDia<=0.012)) difficulty='Zor';
+    return {
+      kind:'exercise', index:n, name:'ALIŞTIRMA #'+n, difficulty,
+      plateW, plateH:120,
+      planeTol, planeNoiseBase:0.028, planeMinPoints:3,
+      holes, distances
+    };
+  }
+
+  // ---- Parça verisinden ölçüm motoru için PART dizini üretir ----
+  function buildPartIndex(part){
+    const idx = {};
+    idx.UST = {minPoints:part.planeMinPoints, noiseBase:part.planeNoiseBase, tol:part.planeTol};
+    part.holes.forEach(h=>{
+      idx[h.id] = {minPoints:h.minPoints, noiseBase:h.noiseBase, nominal:h.nominalDia, tol:h.tolDia, cx:h.cx, cy:h.cy, r:h.r};
+    });
+    return idx;
+  }
+
+  function orderedFeatureIds(part){
+    const ids=['UST'];
+    part.holes.forEach(h=>ids.push(h.id));
+    part.distances.forEach(d=>ids.push(d.id));
+    return ids;
+  }
+
+  function findHole(part,id){ return part.holes.find(h=>h.id===id); }
+
+  // ---- Çizim üreticileri ----
+  function renderPrintSVG(part){
+    const vbW = part.plateW + 140, plateX=60, plateY=40, plateH=part.plateH;
+    let s = `<svg class="print" viewBox="0 0 ${vbW} 260">`;
+    s += `<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--ink-dim)"/></marker></defs>`;
+    s += `<rect x="${plateX}" y="${plateY}" width="${part.plateW}" height="${plateH}" fill="none" stroke="var(--ink)" stroke-width="1.5"/>`;
+    s += `<path d="M${plateX},${plateY} L${plateX-8},${plateY-14} L${plateX+8},${plateY-14} Z" fill="var(--amber)"/>`;
+    s += `<rect x="${plateX-13}" y="${plateY-30}" width="16" height="14" fill="none" stroke="var(--amber)" stroke-width="1"/>`;
+    s += `<text x="${plateX-5}" y="${plateY-20}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--amber)">A</text>`;
+    s += `<text x="${plateX+30}" y="${plateY-20}" font-family="IBM Plex Mono" font-size="10.5" fill="var(--ink-dim)">Ⓐ ÜST YÜZEY — düzlemlik ≤ ${part.planeTol.toFixed(3)}</text>`;
+    part.holes.forEach((h,i)=>{
+      s += `<circle cx="${h.cx}" cy="${h.cy}" r="${h.r.toFixed(1)}" fill="none" stroke="var(--ink)" stroke-width="1.5"/>`;
+      s += `<line x1="${(h.cx-h.r-4).toFixed(1)}" y1="${h.cy}" x2="${(h.cx+h.r+4).toFixed(1)}" y2="${h.cy}" stroke="var(--ink-faint)" stroke-width="0.75"/>`;
+      s += `<line x1="${h.cx}" y1="${(h.cy-h.r-4).toFixed(1)}" x2="${h.cx}" y2="${(h.cy+h.r+4).toFixed(1)}" stroke="var(--ink-faint)" stroke-width="0.75"/>`;
+      const stagger = (i%2)*16;
+      s += `<line x1="${(h.cx+h.r*0.7).toFixed(1)}" y1="${(h.cy-h.r*0.7).toFixed(1)}" x2="${h.cx+22}" y2="${plateY-14-stagger}" stroke="var(--ink-dim)" stroke-width="0.75"/>`;
+      s += `<text x="${h.cx+24}" y="${plateY-12-stagger}" font-family="IBM Plex Mono" font-size="10.5" fill="var(--ink-dim)">⌀${h.nominalDia.toFixed(2)} ±${h.tolDia.toFixed(3)}</text>`;
+      s += `<text x="${h.cx}" y="${h.cy+3}" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faint)">${h.id}</text>`;
+    });
+    part.distances.forEach((d,i)=>{
+      const h1=findHole(part,d.from), h2=findHole(part,d.to);
+      const y = plateY+plateH+25+i*24;
+      s += `<line x1="${h1.cx}" y1="${y}" x2="${h2.cx}" y2="${y}" stroke="var(--ink-dim)" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>`;
+      s += `<line x1="${h1.cx}" y1="${plateY+plateH}" x2="${h1.cx}" y2="${y+5}" stroke="var(--ink-faint)" stroke-width="0.5"/>`;
+      s += `<line x1="${h2.cx}" y1="${plateY+plateH}" x2="${h2.cx}" y2="${y+5}" stroke="var(--ink-faint)" stroke-width="0.5"/>`;
+      s += `<text x="${(h1.cx+h2.cx)/2}" y="${y+15}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10.5" fill="var(--ink-dim)">${d.nominal.toFixed(2)} ±${d.tol.toFixed(3)}</text>`;
+    });
+    s += `</svg>`;
+    return s;
+  }
+  function renderSimBaseSVG(part){
+    const vbW = part.plateW + 140, plateX=60, plateY=40, plateH=part.plateH;
+    let s = `<svg class="sim" viewBox="0 0 ${vbW} 260" id="simSvg">`;
+    s += `<rect x="${plateX}" y="${plateY}" width="${part.plateW}" height="${plateH}" fill="none" stroke="var(--line-strong)" stroke-width="1"/>`;
+    part.holes.forEach(h=>{
+      s += `<circle cx="${h.cx}" cy="${h.cy}" r="${h.r.toFixed(1)}" fill="none" stroke="var(--line-strong)" stroke-width="1"/>`;
+    });
+    s += `<g id="overlay"></g></svg>`;
+    return s;
+  }
+  function renderSpecTable(part){
+    let rows = `<tr><td>UST</td><td>Düzlem</td><td class="tol">datum A</td><td class="tol">≤${part.planeTol.toFixed(3)}</td></tr>`;
+    part.holes.forEach(h=>{
+      rows += `<tr><td>${h.id}</td><td>Çember Ø</td><td>${h.nominalDia.toFixed(2)}</td><td class="tol">±${h.tolDia.toFixed(3)}</td></tr>`;
+    });
+    part.distances.forEach(d=>{
+      rows += `<tr><td>${d.id}</td><td>Mesafe</td><td>${d.nominal.toFixed(2)}</td><td class="tol">±${d.tol.toFixed(3)}</td></tr>`;
+    });
+    return `<table class="spec"><tr><th>Özellik</th><th>Tip</th><th>Nominal</th><th>Tol.</th></tr>${rows}</table>`;
+  }
+  function renderHero(part){
+    document.getElementById('printContainer').innerHTML = renderPrintSVG(part);
+    document.getElementById('specContainer').innerHTML = renderSpecTable(part);
+    document.getElementById('printTitle').textContent = part.kind==='lesson' ? 'PARÇA ÇİZİMİ — '+part.name : 'PARÇA ÇİZİMİ — '+part.name;
+    document.getElementById('drawingNote').textContent = part.kind==='lesson'
+      ? 'Malzeme: Al 6061 · Kalınlık: 12 mm · Genel tolerans belirtilmemiş boyutlar için ±0.10'
+      : 'Otomatik üretilen alıştırma parçası · Zorluk: '+part.difficulty;
+    document.getElementById('simContainer').innerHTML = renderSimBaseSVG(part);
+    overlayEl = document.getElementById('overlay');
+    clearOverlay();
+  }
+
+  const LESSONS = [
+    { id:1, title:'1 · Referans ve İlk Ölçüm',
+      brief:'Her CMM programı bir <b>referans düzlem (datum)</b> ölçümüyle başlar. Önce <b>UST</b> düzlemini, sonra <b>DELIK1</b>\'i ölç ve <b>REPORT</b> ile raporu al.',
+      starter:'# Ders 1: referans düzlem + ilk delik\nMEAS PLANE UST N=5\nMEAS CIRCLE DELIK1 N=6\nREPORT\n',
+      check:r => !!(r.UST && r.DELIK1 && r.reported) },
+    { id:2, title:'2 · İki Delik Arası Mesafe',
+      brief:'Şimdi her iki deliği de ölç ve <b>DIST DELIK1 DELIK2</b> komutuyla merkezler arası mesafeyi hesapla. Sonucu 60.00 ±0.05 toleransıyla karşılaştır.',
+      starter:'MEAS PLANE UST N=5\nMEAS CIRCLE DELIK1 N=6\nMEAS CIRCLE DELIK2 N=6\nDIST DELIK1 DELIK2\nREPORT\n',
+      check:r => !!(r.DELIK1 && r.DELIK2 && r.MERKEZ_MESAFE && r.reported) },
+    { id:3, title:'3 · Nokta Sayısının Etkisi',
+      brief:'DELIK1\'i önce sadece <b>N=3</b> nokta ile ölç ve sonucu gözlemle — gürültülü olabilir. Sonra aynı satırı <b>N=10</b> ya da daha fazlasıyla tekrar çalıştırıp farkı karşılaştır. Bu dersi geçmek için en az 8 noktayla ölçüm yapmalısın.',
+      starter:'MEAS CIRCLE DELIK1 N=3\nREPORT\n\n# şimdi N değerini artırıp tekrar çalıştır',
+      check:r => !!(r.DELIK1 && r.DELIK1.pointsUsed>=8 && r.reported) },
+    { id:4, title:'4 · Serbest Alıştırma',
+      brief:'Kendi programını sıfırdan yaz: referans düzlem, iki delik ve aralarındaki mesafe. Hedef, dört sonucun da <b>UYGUN</b> çıkması. Programı birkaç kez çalıştırıp tekrarlanabilirliği gözlemleyebilirsin.',
+      starter:'# Serbest alıştırma — kendi programını yaz\n',
+      check:r => !!(r.UST && r.DELIK1 && r.DELIK2 && r.MERKEZ_MESAFE && r.reported &&
+                    [r.UST,r.DELIK1,r.DELIK2,r.MERKEZ_MESAFE].every(x=>x.pass)) }
+  ];
+
+  let mode = 'lesson';
+  let currentLesson = 0;
+  let currentPart = LESSON_PART;
+  let currentExerciseIndex = 1;
+  let PART = {};
+  let results = {};
+
+  const codeEl = document.getElementById('code');
+  const logEl = document.getElementById('log');
+  let overlayEl = null;
+  const simState = document.getElementById('simState');
+  const reportWrap = document.getElementById('report-wrap');
+  const tabsEl = document.getElementById('lessonTabs');
+  const briefEl = document.getElementById('lessonBrief');
+  const exercisePanelEl = document.getElementById('exercisePanel');
+
+  function gauss(std){
+    let u=1-Math.random(), v=Math.random();
+    return std*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  }
+  function log(msg, cls){
+    const line = document.createElement('div');
+    if(cls) line.className = cls;
+    line.textContent = msg;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  function clearLog(){ logEl.innerHTML=''; }
+  function clearOverlay(){ overlayEl.innerHTML=''; }
+
+  function renderTabs(){
+    tabsEl.innerHTML='';
+    LESSONS.forEach((l,i)=>{
+      const b=document.createElement('button');
+      b.className='lesson-tab'+(mode==='lesson' && i===currentLesson?' active':'');
+      b.textContent=l.title;
+      b.onclick=()=>selectLesson(i);
+      tabsEl.appendChild(b);
+    });
+    const exBtn=document.createElement('button');
+    exBtn.className='lesson-tab'+(mode==='exercise'?' active':'');
+    exBtn.textContent='🎲 Alıştırmalar (1–100)';
+    exBtn.onclick=()=>selectExercise(currentExerciseIndex||1);
+    tabsEl.appendChild(exBtn);
+  }
+  function resetWorkspace(){
+    reportWrap.innerHTML='';
+    clearLog(); clearOverlay();
+    results = {};
+    simState.textContent='bekliyor';
+  }
+  function selectLesson(i){
+    mode='lesson';
+    currentLesson=i;
+    currentPart = LESSON_PART;
+    PART = buildPartIndex(currentPart);
+    renderTabs();
+    briefEl.style.display='';
+    exercisePanelEl.style.display='none';
+    briefEl.innerHTML = LESSONS[i].brief;
+    codeEl.value = LESSONS[i].starter;
+    renderHero(currentPart);
+    resetWorkspace();
+  }
+  function exerciseStarter(part){
+    const ids = orderedFeatureIds(part).filter(id=>id!=='UST');
+    return `# ${part.name} — kendi programını yaz\n# Ölçülecek özellikler: UST, ${ids.join(', ')}\n`;
+  }
+  function renderExercisePanel(){
+    const diffClass = currentPart.difficulty.toLocaleLowerCase('tr');
+    const holeWord = currentPart.holes.length===1 ? '1 delik' : currentPart.holes.length+' delik';
+    const distWord = currentPart.distances.length ? ' ve aralarındaki mesafe' : '';
+    exercisePanelEl.innerHTML = `
+      <div class="exercise-panel">
+        <span class="ex-title">${currentPart.name}</span>
+        <span class="ex-diff ${diffClass}">${currentPart.difficulty}</span>
+        <span class="ex-desc">Referans düzlemi ve ${holeWord}${distWord} ölç; hepsi UYGUN çıkana kadar programını düzelt.</span>
+        <div class="exercise-nav">
+          <button id="exPrevBtn" ${currentExerciseIndex<=1?'disabled':''}>‹ Önceki</button>
+          <input id="exJumpInput" type="number" min="1" max="100" value="${currentExerciseIndex}">
+          <button id="exJumpBtn">Git</button>
+          <button id="exNextBtn" ${currentExerciseIndex>=100?'disabled':''}>Sonraki ›</button>
+          <button id="exRandomBtn">🎲 Rastgele</button>
+        </div>
+      </div>`;
+    document.getElementById('exPrevBtn').onclick = ()=> selectExercise(currentExerciseIndex-1);
+    document.getElementById('exNextBtn').onclick = ()=> selectExercise(currentExerciseIndex+1);
+    document.getElementById('exRandomBtn').onclick = ()=> selectExercise(1+Math.floor(Math.random()*100));
+    document.getElementById('exJumpBtn').onclick = ()=>{
+      const v = parseInt(document.getElementById('exJumpInput').value,10);
+      if(v>=1 && v<=100) selectExercise(v);
+    };
+  }
+  function selectExercise(n){
+    n = Math.max(1, Math.min(100, n));
+    mode='exercise';
+    currentExerciseIndex = n;
+    currentPart = generateExercise(n);
+    PART = buildPartIndex(currentPart);
+    renderTabs();
+    briefEl.style.display='none';
+    exercisePanelEl.style.display='';
+    renderExercisePanel();
+    codeEl.value = exerciseStarter(currentPart);
+    renderHero(currentPart);
+    resetWorkspace();
+  }
+
+  function svgEl(tag, attrs){
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for(const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function animatePoints(pts, delayBase, color){
+    pts.forEach((p, idx)=>{
+      const dot = svgEl('circle', {cx:p.x, cy:p.y, r:1.8, class:'probe-dot', fill: color||'var(--probe)'});
+      overlayEl.appendChild(dot);
+      setTimeout(()=>dot.classList.add('show'), delayBase + idx*90);
+    });
+  }
+
+  function measurePlane(id, n){
+    const spec = PART[id];
+    if(n < spec.minPoints) throw new Error(`${id}: düzlem ölçümü için en az ${spec.minPoints} nokta gerekir (verilen: ${n})`);
+    const flat = Math.abs(gauss(spec.noiseBase/Math.sqrt(n)));
+    const pass = flat <= spec.tol;
+    return {type:'plane', id, measured:flat, tol:spec.tol, pass, pointsUsed:n};
+  }
+  function measureCircle(id, n){
+    const spec = PART[id];
+    if(n < spec.minPoints) throw new Error(`${id}: çember ölçümü için en az ${spec.minPoints} nokta gerekir (verilen: ${n})`);
+    const diaErr = gauss(spec.noiseBase/Math.sqrt(n));
+    const cErrX = gauss((spec.noiseBase/2)/Math.sqrt(n));
+    const cErrY = gauss((spec.noiseBase/2)/Math.sqrt(n));
+    const measuredDia = spec.nominal + diaErr;
+    const pass = Math.abs(diaErr) <= spec.tol;
+    return {type:'circle', id, measured:measuredDia, nominal:spec.nominal, dev:diaErr, tol:spec.tol, pass, pointsUsed:n, cErrX, cErrY};
+  }
+  function computeDistance(id1, id2, store){
+    store = store || results;
+    if(!store[id1] || !store[id2]) throw new Error(`DIST için önce ${id1} ve ${id2} ölçülmüş olmalı`);
+    const spec = currentPart.distances.find(d => (d.from===id1 && d.to===id2) || (d.from===id2 && d.to===id1));
+    if(!spec) throw new Error(`${id1} ve ${id2} arasında tanımlı bir mesafe yok`);
+    const nominal = spec.nominal, tol = spec.tol;
+    const dxMeasured = nominal + (store[spec.to].cErrX - store[spec.from].cErrX);
+    const dev = dxMeasured - nominal;
+    const pass = Math.abs(dev) <= tol;
+    return {type:'distance', id:spec.id, measured:dxMeasured, nominal, dev, tol, pass};
+  }
+
+  function featureLabel(id){
+    return {UST:'UST (Düzlem)', DELIK1:'DELIK1 (Ø)', DELIK2:'DELIK2 (Ø)', MERKEZ_MESAFE:'MERKEZ_MESAFE'}[id] || id;
+  }
+
+  function renderMeasuredMark(res, delay){
+    if(res.type==='plane'){
+      const pts=[];
+      for(let i=0;i<res.pointsUsed;i++){
+        pts.push({x:70+Math.random()*260, y:50+Math.random()*100});
+      }
+      animatePoints(pts, delay, 'var(--amber)');
+      setTimeout(()=>{
+        const t = svgEl('text', {x:200, y:30, 'text-anchor':'middle', class:'measured-mark', 'font-family':'IBM Plex Mono', 'font-size':'11', fill: res.pass?'var(--pass)':'var(--fail)'});
+        t.textContent = `Düzlemlik: ${res.measured.toFixed(3)} mm  ${res.pass?'✓ UYGUN':'✗ TOLERANS DIŞI'}`;
+        overlayEl.appendChild(t);
+        setTimeout(()=>t.classList.add('show'), 20);
+      }, delay + res.pointsUsed*90 + 150);
+    } else if(res.type==='circle'){
+      const spec = PART[res.id];
+      const pts=[];
+      for(let i=0;i<res.pointsUsed;i++){
+        const ang = (i/res.pointsUsed)*Math.PI*2 + (Math.random()-0.5)*0.3;
+        const jitter = (Math.random()-0.5)*1.4;
+        pts.push({x: spec.cx + Math.cos(ang)*(spec.r+jitter), y: spec.cy + Math.sin(ang)*(spec.r+jitter)});
+      }
+      animatePoints(pts, delay);
+      setTimeout(()=>{
+        const exagg = 8;
+        const rDraw = spec.r + res.dev*SCALE*exagg;
+        const cx = spec.cx + res.cErrX*SCALE*exagg;
+        const cy = spec.cy + res.cErrY*SCALE*exagg;
+        const ring = svgEl('circle', {cx, cy, r:Math.max(rDraw,3), fill:'none', 'stroke-dasharray':'3,2', stroke: res.pass?'var(--pass)':'var(--fail)', 'stroke-width':1.4, class:'measured-mark'});
+        overlayEl.appendChild(ring);
+        const t = svgEl('text', {x: spec.cx, y: spec.cy + (res.id==='DELIK1'?-30:46), 'text-anchor':'middle', class:'measured-mark', 'font-family':'IBM Plex Mono', 'font-size':'10', fill: res.pass?'var(--pass)':'var(--fail)'});
+        t.textContent = `Ø${res.measured.toFixed(3)}  ${res.dev>=0?'+':''}${res.dev.toFixed(3)}  ${res.pass?'✓':'✗'}`;
+        overlayEl.appendChild(t);
+        setTimeout(()=>{ring.classList.add('show'); t.classList.add('show');}, 20);
+      }, delay + res.pointsUsed*90 + 150);
+    }
+  }
+
+  function checkPassed(r){
+    if(mode==='exercise'){
+      const ids = orderedFeatureIds(currentPart);
+      return ids.every(id=>r[id] && r[id].pass) && !!r.reported;
+    }
+    return LESSONS[currentLesson].check(r);
+  }
+  function renderReport(){
+    results.reported = true;
+    const order = orderedFeatureIds(currentPart);
+    let rows='';
+    order.forEach(id=>{
+      const r = results[id];
+      if(!r) return;
+      const nominalStr = r.type==='plane' ? '≤ '+r.tol.toFixed(2) : r.nominal.toFixed(2);
+      const measuredStr = r.measured.toFixed(3);
+      const devStr = r.type==='plane' ? '—' : (r.dev>=0?'+':'')+r.dev.toFixed(3);
+      rows += `<tr><td>${featureLabel(id)}</td><td>${measuredStr}</td><td>${nominalStr}</td><td>±${r.tol.toFixed(2)}</td><td>${devStr}</td><td><span class="badge ${r.pass?'pass':'fail'}">${r.pass?'UYGUN':'TOLERANS DIŞI'}</span></td></tr>`;
+    });
+    if(!rows){
+      reportWrap.innerHTML = `<div class="banner pending">Rapor boş — REPORT çağrılmadan önce en az bir özellik ölçülmeli.</div>`;
+      return;
+    }
+    const passed = checkPassed(results);
+    let nextControls = '';
+    if(passed){
+      if(mode==='lesson' && currentLesson < LESSONS.length-1){
+        nextControls = '<button id="nextLessonBtn">Sonraki Derse Geç →</button>';
+      } else if(mode==='exercise'){
+        nextControls = '<button id="nextExerciseBtn">Sonraki Alıştırma →</button> <button id="randomExerciseBtn">🎲 Rastgele Alıştırma</button>';
+      }
+    }
+    const successMsg = mode==='exercise' ? '✓ Alıştırma tamamlandı — tüm özellikler UYGUN.' : '✓ Ders hedefi karşılandı.';
+    const pendingMsg = mode==='exercise' ? 'Henüz tüm özellikler UYGUN değil — programını gözden geçir.' : 'Henüz ders hedefine ulaşmadın — komut referansına ve ölçüm planına tekrar bak.';
+    reportWrap.innerHTML = `
+      <table class="report">
+        <tr><th>Özellik</th><th>Ölçülen</th><th>Nominal</th><th>Tol.</th><th>Sapma</th><th>Sonuç</th></tr>
+        ${rows}
+      </table>
+      <div class="banner ${passed?'success':'pending'}">
+        <span>${passed ? successMsg : pendingMsg}</span>
+        ${nextControls}
+      </div>
+    `;
+    const nb = document.getElementById('nextLessonBtn');
+    if(nb) nb.onclick = ()=> selectLesson(currentLesson+1);
+    const neb = document.getElementById('nextExerciseBtn');
+    if(neb) neb.onclick = ()=> selectExercise(currentExerciseIndex>=100 ? 1 : currentExerciseIndex+1);
+    const reb = document.getElementById('randomExerciseBtn');
+    if(reb) reb.onclick = ()=> selectExercise(1+Math.floor(Math.random()*100));
+  }
+
+  function runProgram(){
+    clearLog(); clearOverlay(); reportWrap.innerHTML='';
+    results = {};
+    simState.textContent='çalışıyor…';
+    log('--- program çalıştırılıyor ---', 'info');
+    const lines = codeEl.value.split('\n');
+    let delay = 0;
+    let hadReport = false;
+    lines.forEach(raw=>{
+      let line = raw.split('#')[0].trim();
+      if(!line) return;
+      const tokens = line.split(/\s+/);
+      const cmd = tokens[0].toUpperCase();
+      try{
+        if(cmd==='MEAS'){
+          const type = (tokens[1]||'').toUpperCase();
+          const id = (tokens[2]||'').toUpperCase();
+          const nMatch = line.match(/N=(\d+)/i);
+          const n = nMatch ? parseInt(nMatch[1],10) : 5;
+          if(!PART[id]) throw new Error(`bilinmeyen özellik "${id}"`);
+          let res;
+          if(type==='PLANE') res = measurePlane(id, n);
+          else if(type==='CIRCLE') res = measureCircle(id, n);
+          else throw new Error(`bilinmeyen tip "${type}" (PLANE veya CIRCLE olmalı)`);
+          results[id] = res;
+          const capturedDelay = delay;
+          setTimeout(()=>{
+            log(`> ${line}`, 'info');
+            log(`  ${id}: ${res.type==='plane' ? 'düzlemlik '+res.measured.toFixed(3)+' mm' : 'Ø'+res.measured.toFixed(3)+' mm'}  ${res.pass?'✓ UYGUN':'✗ TOLERANS DIŞI'}`, res.pass?'ok':'err');
+          }, capturedDelay);
+          renderMeasuredMark(res, delay);
+          delay += 300 + n*90;
+        } else if(cmd==='DIST'){
+          const id1=(tokens[1]||'').toUpperCase(), id2=(tokens[2]||'').toUpperCase();
+          const res = computeDistance(id1,id2,results);
+          results[res.id] = res;
+          const capturedDelay = delay;
+          setTimeout(()=>{
+            log(`> ${line}`, 'info');
+            log(`  ${res.id}: ${res.measured.toFixed(3)} mm  ${res.pass?'✓ UYGUN':'✗ TOLERANS DIŞI'}`, res.pass?'ok':'err');
+          }, capturedDelay);
+          delay += 250;
+        } else if(cmd==='REPORT'){
+          hadReport = true;
+          const capturedDelay = delay;
+          setTimeout(()=>{ log('> REPORT', 'info'); renderReport(); simState.textContent='tamamlandı'; }, capturedDelay);
+          delay += 150;
+        } else {
+          const capturedDelay = delay;
+          setTimeout(()=> log(`HATA: bilinmeyen komut "${cmd}"`, 'err'), capturedDelay);
+          delay += 100;
+        }
+      }catch(e){
+        const capturedDelay = delay;
+        setTimeout(()=> log(`HATA (${line}): ${e.message}`, 'err'), capturedDelay);
+        delay += 100;
+      }
+    });
+    if(!hadReport){
+      setTimeout(()=> log('Not: programın sonunda REPORT çağrılmadı — sonuçlar hesaplandı ama rapor basılmadı.', 'err'), delay);
+    }
+  }
+
+  document.getElementById('runBtn').onclick = runProgram;
+  document.getElementById('clearBtn').onclick = ()=>{ codeEl.value=''; clearLog(); clearOverlay(); reportWrap.innerHTML=''; results={}; simState.textContent='bekliyor'; };
+  document.getElementById('resetLessonBtn').onclick = ()=>{ codeEl.value = mode==='lesson' ? LESSONS[currentLesson].starter : exerciseStarter(currentPart); };
+
+  selectLesson(0);
+})();
+</script>
+</body>
+</html>
